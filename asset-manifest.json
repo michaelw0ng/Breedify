@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/Breedify/static/css/main.d2cbd5c9.chunk.css",
+    "main.js": "/Breedify/static/js/main.4c1fd3c1.chunk.js",
+    "main.js.map": "/Breedify/static/js/main.4c1fd3c1.chunk.js.map",
+    "runtime-main.js": "/Breedify/static/js/runtime-main.4aba0ab3.js",
+    "runtime-main.js.map": "/Breedify/static/js/runtime-main.4aba0ab3.js.map",
+    "static/js/2.dd6a5f49.chunk.js": "/Breedify/static/js/2.dd6a5f49.chunk.js",
+    "static/js/2.dd6a5f49.chunk.js.map": "/Breedify/static/js/2.dd6a5f49.chunk.js.map",
+    "index.html": "/Breedify/index.html",
+    "static/css/main.d2cbd5c9.chunk.css.map": "/Breedify/static/css/main.d2cbd5c9.chunk.css.map",
+    "static/js/2.dd6a5f49.chunk.js.LICENSE.txt": "/Breedify/static/js/2.dd6a5f49.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.4aba0ab3.js",
+    "static/js/2.dd6a5f49.chunk.js",
+    "static/css/main.d2cbd5c9.chunk.css",
+    "static/js/main.4c1fd3c1.chunk.js"
+  ]
+}
