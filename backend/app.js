@@ -24,7 +24,7 @@ console.log(client_id)
 
 server.on("listening", function()
 {
-   console.log("Now listening on port 8080");
+   console.log("Now listening on a server");
 });
 
 server.on("request", function(req, res)
