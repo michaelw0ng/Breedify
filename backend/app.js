@@ -8,16 +8,19 @@ const cors = require('http-cors');
 
 const {client_id, client_secret} = require("./credentials.json");
 
+// process.env.PORT is used for Heroku port matching
 const port = process.env.PORT || 8080;
 const server = http.createServer( function(request, response) {
-  if (cors(request, response)) return; 
+   // Cors library may or may not be necessary
+   // Cors library is used for bypassing CORS blocks
+   if (cors(request, response)) return; 
 });
 
-let dog_search_term = "";
+let dog_search_term = ""; // Used to grab random dog breed 
 
-let video_ids = [];
+let video_ids = []; // Used to grab video id from YouTube API
 
-let synch = false;
+let synch = false; // Synch variables ssed to linearly progress through url links
 let synch_1 = false;
 
 console.log(client_id)
@@ -27,27 +30,30 @@ server.on("listening", function()
    console.log("Now listening on a server");
 });
 
+// HTTP server event listener that handles HTTP requests
 server.on("request", function(req, res)
 {
 	console.log(req.url);
    if (req.url === "/" || req.url === "/breedify.herokuapp.com")
    {
-   	console.log(req.url);
       synch = true;
       synch_1 = true;
       if (req.method === "POST")
-      { 	
-         get_dog_contents(res);
+      { 
+         // When frontend sends a POST request, begin sending API request to Dog.ceo for a random dog breed
+         get_dog_contents(res); 
       }
    }
    else if (req.url.startsWith("/receive_code") || req.url.startsWith("/breedify.herokuapp.com/receive_code") && synch && synch_1)
    {
+      // Used to parse authorization code from Google authentication to get access token
       const {code} = url.parse(req.url,true).query
       console.log("Youtube Auth Code has been received");
       console.log();
 
+      // Returns to frontend page
       res.writeHead(302, {
-         'Location': `http://localhost:3000`
+         'Location': `https://michaelw0ng.github.io/Breedify`
       });
       res.end();
 
@@ -55,6 +61,8 @@ server.on("request", function(req, res)
    }
    else
    {
+      // 404 Not Found isn't used in the actual backend
+
       // res.writeHead(404, {"Content-Type": "text/html"});
       // res.write(`<h1>404 Page Not Found</h1>`);
       // res.end();
@@ -63,6 +71,7 @@ server.on("request", function(req, res)
 
 function get_dog_contents(res)
 {
+   // GET request to Dog.ceo API to get dog breeds
    const dog_endpoint = "https://dog.ceo/api/breeds/list/all";
    https.request(`${dog_endpoint}`, {method: "GET"}, process_stream).end();
    function process_stream(dog_stream){
@@ -75,6 +84,7 @@ function get_dog_contents(res)
 function serve_results(dog_data, res){
    let dog = JSON.parse(dog_data);
    let random_breed = Object.keys(dog.message);
+   // Selects a random dog breed from data received by Dog.ceo API
    dog_search_term = random_breed[Math.floor(Math.random() * random_breed.length + 1)] + " dog";
    console.log();
    console.log("Dog API has been called");
@@ -82,7 +92,8 @@ function serve_results(dog_data, res){
    console.log("Dog breed randomly selected: " + dog_search_term);
    console.log();
 
-   //current_time = Date.now();
+   // If authentication for access token has occured before, you won't have to authenticate until after token expires. 
+   // Otherwise, you would have to authenticate with Google first.
    if (fs.existsSync('./cached_access_token_info') && fs.existsSync('./time_token_generated') && fs.existsSync('./token_expires_in'))
    {
       const time_token_generated = fs.readFileSync('time_token_generated').toString();
@@ -106,6 +117,10 @@ function serve_results(dog_data, res){
 
 function redirect_request_to_youtube_auth(res)
 {
+   // Google authorization endpoint 
+   // Sends Google authorization link to login to frontend to visit
+   // Requires client id, redirect uri, and other parameters
+   // Required query parameters for all endpoints are given on Google API documentation
    const auth_endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
    const info = `&response_type=code&redirect_uri=https://breedify.herokuapp.com/receive_code&client_id=${client_id}&scope=https://www.googleapis.com/auth/youtube`;
    res.write(`${auth_endpoint}?${info}`);
@@ -115,6 +130,9 @@ function redirect_request_to_youtube_auth(res)
 }
 
 function send_access_token_request(code, res){
+   // Sends POST request to Google to get access token
+   // Requires client id, client secret, redirect uri, and other POST data
+   // Required data for all endpoints are given on Google API documentation
    const token_endpoint = "https://oauth2.googleapis.com/token";
    const redirect_uri = `https://breedify.herokuapp.com/receive_code`;
    const grant_type = "authorization_code";
@@ -137,6 +155,7 @@ function send_access_token_request(code, res){
 function receive_access_token(body, res)
 {
    const {access_token, expires_in} = JSON.parse(body);
+   // Creates files to store access token information for bypassing authorization process if already done and not expired
    fs.writeFile('./cached_access_token_info', access_token.toString(), () => {});
    fs.writeFile('./token_expires_in', expires_in.toString(), () => {});
    fs.writeFile('./time_token_generated', Date.now().toString(), () => {});
@@ -147,6 +166,9 @@ function receive_access_token(body, res)
 }
 
 function send_search_request(access_token, res){
+   // GET request to get video data from YouTube API
+   // Requires search term, access token, and other query parameters
+   // Required query parameters for all endpoints are given on Google API documentation
    const search_endpoint = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${dog_search_term}&max-results=1&chart=mostPopular&type=video&access_token=${access_token}`;
    let options = {
       method: "GET",
@@ -174,8 +196,10 @@ function receive_search_response(body, res){
          console.log("Youtube related video titles:");
       }
       console.log(videos?.items[i]?.snippet?.title);
+      // Adds video id from YouTube API to array
       video_ids.push(videos?.items[i]?.id?.videoId);
    }
+   // Sends video id from YouTube API to frontend for display in embed video
    res.write(`${video_ids[0]}`);
    res.end();
    video_ids = [];
