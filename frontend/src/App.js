@@ -10,7 +10,6 @@ function App() {
   let redirect = "";
   const [videos, setVideos] = useState([]); // Used to update the Video component which renders the YouTube embed video
 
-
   function onClick() {
     let redirected = false;
 
@@ -23,12 +22,13 @@ function App() {
       if (xhr.responseText.length > 20) {
         redirect = xhr.responseText; // Used to grab the Google authentication link from backend
       }
+
       if (xhr.responseText !== "works" && xhr.responseText.length < 20) {
         video_ids.push(xhr.responseText);
         console.log(video_ids);
         video_ids.forEach(video => setVideos(() => [video]));
       }
-
+      
       if (redirect !== "" && !redirected) {
         history.push("/google"); // Used to redirect to Google authentication page with the help of Route below
       }
