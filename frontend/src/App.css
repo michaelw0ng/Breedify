@@ -1,0 +1,18 @@
+#font {
+   font-family: "Arial Rounded MT Bold";
+   font-weight: lighter;
+   font-size: 350%;
+}
+
+#border {
+   padding-left: 25px;
+   text-align: center;
+}
+
+p {
+   font-size: 150%;
+}
+
+#smalltext {
+   font-size: 100%;
+}
