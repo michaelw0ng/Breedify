@@ -4,4 +4,7 @@ Returns a YouTube video from a random dog breed using Dog.ceo API and YouTube AP
 **Deployed on GH pages at**: https://michaelw0ng.github.io/Breedify
 <br/>
 <br/>
+**Frontend**: React, HTML/CSS
+**Backend**: Node
+
 
