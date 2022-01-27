@@ -1,17 +1,7 @@
 # Breedify
-Returns a YouTube video from a random dog breed using Dog.ceo API and YouTube API <br/>
-<br/>
-Built by: Michael Wong
-<br/>
-<br/>
-Deployed on GitHub pages at: **https://michaelw0ng.github.io/Breedify**
-<br/>
-<br/>
-**Frontend**: React, HTML/CSS
-<br/>
-**Backend**: Node
-<br/>
-<br/>
-Backend server is hosted on Heroku
+Returns a YouTube video from a random dog breed using Dog.ceo API and YouTube API </br> </br>
+<b>Live</b>: https://michaelw0ng.github.io/Breedify </br>
+<b>Technologies</b>: React, JavaScript, HTML/CSS, Node.js </br>
+<b>Deployed using</b>: Github Pages, Heroku </br> </br>
 
 
